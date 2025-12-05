@@ -1,0 +1,201 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+enum Role {
+  carrier
+  shipper
+}
+
+
+// model User {
+//   id       Int     @id @default(autoincrement())
+//   email    String  @unique
+//   username String?  @unique  
+//   name     String?
+//   password String
+//   phoneNumber String
+//   address String
+//   companyName String @unique
+//   driverLicense String?
+//   truckType String?
+//   loadCapacity String?
+//   plateNumber String?
+//   yearOfManufacture String?
+//   role Role @default(shipper)
+//   shipments Shipment[]
+//   bids Bid[]
+//   @@index([role])               //  for fast filtering by role
+//   @@index([companyName])  
+
+// } 
+
+model User {
+  id              Int      @id @default(autoincrement())
+  email           String   @unique
+  username        String?  @unique  
+  name            String?
+  password        String
+  phoneNumber     String
+  address         String
+  companyName     String   @unique
+  driverLicense   String?
+  truckType       String?
+  loadCapacity    String?
+  plateNumber     String?
+  yearOfManufacture String?
+  role            Role     @default(shipper)
+
+  shipments       Shipment[]
+  bids            Bid[]
+  jobs            Job[]     @relation("DriverJobs")
+
+  @@index([role])
+  @@index([companyName])
+}
+
+
+// model Shipment {
+//   id Int @id @default(autoincrement())
+//   // name String
+//   cargoType String
+//   pickupLocation String
+//   deliveryLocation String
+//   additionalNote String?
+//   budget Json
+//   weight Int
+//   shipperId Int
+//   shipper   User      @relation(fields: [shipperId], references: [id], onDelete: Cascade)
+//   urgent Boolean @default(false)
+//   pickupDate DateTime
+//   deliveryDate DateTime
+//   bids Bid[]
+//   distance Int?
+//   @@index([shipperId])        //  speeds up queries by shipper
+//   @@index([urgent])           //  speeds up filtering urgent shipments
+//   @@index([pickupDate])       //  useful for scheduling
+//   @@index([deliveryDate])     //  useful for tracking
+// }
+
+model Shipment {
+  id                Int      @id @default(autoincrement())
+  cargoType         String
+  pickupLocation    String
+  deliveryLocation  String
+  additionalNote    String?
+  budget            Json
+  weight            Int
+  shipperId         Int
+  shipper           User     @relation(fields: [shipperId], references: [id], onDelete: Cascade)
+  urgent            Boolean  @default(false)
+  pickupDate        DateTime
+  deliveryDate      DateTime
+  distance          Int?
+
+  // All bids for this shipment
+  bids              Bid[]    @relation("ShipmentBids")
+
+  // The accepted bid (1-to-1)
+  acceptedBidId     Int?     @unique
+  acceptedBid       Bid?     @relation("SelectedBid", fields: [acceptedBidId], references: [id])
+
+  // The job created from this shipment
+  job               Job?
+
+  @@index([shipperId])
+  @@index([urgent])
+  @@index([pickupDate])
+  @@index([deliveryDate])
+  @@index([acceptedBidId])
+}
+
+
+
+
+// model Bid {
+//   id          Int      @id @default(autoincrement())
+//   amount      Int      // You can store bid amount here
+//   createdAt   DateTime @default(now())
+//   userId      Int
+//   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   shipmentId  Int
+//   shipment    Shipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+//   @@index([userId])
+//   @@index([shipmentId])
+//   @@unique([userId, shipmentId]) // prevents the same user from bidding twice on the same shipment
+// }
+
+model Bid {
+  id            Int        @id @default(autoincrement())
+  amount        Int
+  createdAt     DateTime   @default(now())
+
+  userId        Int
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  shipmentId    Int
+  shipment      Shipment   @relation("ShipmentBids", fields: [shipmentId], references: [id], onDelete: Cascade)
+
+  // 1-to-1 reverse side of SelectedBid
+  selectedFor   Shipment?  @relation("SelectedBid")
+
+  // 1-to-1 reverse side of Job
+  job           Job?
+
+  @@index([userId])
+  @@index([shipmentId])
+  @@unique([userId, shipmentId])
+}
+
+
+
+
+model Job {
+  id           Int       @id @default(autoincrement())
+
+  shipmentId   Int       @unique
+  shipment     Shipment  @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+
+  driverId     Int
+  driver       User      @relation("DriverJobs", fields: [driverId], references: [id], onDelete: Cascade)
+
+  // 1-to-1 relation with Bid
+  bidId        Int       @unique
+  bid          Bid       @relation(fields: [bidId], references: [id])
+
+  status       JobStatus @default(PENDING)
+  currentLat   Float?
+  currentLng   Float?
+  startedAt    DateTime?
+  completedAt  DateTime?
+  updatedAt    DateTime @updatedAt
+
+  @@index([driverId])
+  @@index([shipmentId])
+  @@index([bidId])
+}
+
+
+enum JobStatus {
+  PENDING
+  ACCEPTED
+  IN_TRANSIT
+  ARRIVED_PICKUP
+  LOADED
+  EN_ROUTE
+  DELIVERED
+  COMPLETED
+  CANCELLED
+}
