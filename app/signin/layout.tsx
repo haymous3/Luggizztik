@@ -1,5 +1,5 @@
 import {Montserrat} from "next/font/google";
-import "@/app/_styles/globals.css";
+import "@/styles/globals.css";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",

@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand (existing) */
+  --color-brand-1: #206a4e;
+  --color-brand-2: #67ce67;
+  --color-brand-3: #a6e3cc;
+  --color-brand-4: #d6f9dc;
+  --color-brand-5: #f4fff6;
+  --color-brand-6: #1fe21f;
+  --color-brand-7: #6b2d20;
+  --color-brand-8: #fff9f8;
+  --color-brand-9: #d3d3d3;
+  --color-soft-gradient:
+    linear-gradient(
+      90deg,
+      rgba(107, 45, 32, 0.1) 0%,
+      rgba(31, 226, 31, 0.1) 100%
+    ),
+    #fff;
+  --font-montserrat: var(--font-montserrat);
+
+  /* shadcn/ui variables */
+  --color-background: #ffffff;
+  --color-foreground: #0a0a0a;
+  --color-card: #ffffff;
+  --color-card-foreground: #0a0a0a;
+  --color-primary: #206a4e;
+  --color-primary-foreground: #f4fff6;
+  --color-secondary: #f4f4f4;
+  --color-secondary-foreground: #0a0a0a;
+  --color-muted: #f4f4f4;
+  --color-muted-foreground: #737373;
+  --color-accent: #f4f4f4;
+  --color-accent-foreground: #0a0a0a;
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #fafafa;
+  --color-border: #e5e5e5;
+  --color-ring: #206a4e;
+  --radius: 0.375rem;
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}

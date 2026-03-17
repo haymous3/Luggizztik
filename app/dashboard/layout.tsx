@@ -1,5 +1,5 @@
 import {Poppins} from "next/font/google";
-import {AuthHeader} from "../_components/AuthHeader";
+import {AuthHeader} from "@/features/auth/components/AuthHeader";
 //import {headers} from "next/headers";
 
 const poppins = Poppins({

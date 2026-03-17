@@ -1,8 +1,9 @@
-import AuthLayout from "@/app/_components/AuthLayout";
-import CarrierSignUpForm from "@/app/_components/CarrierSignUpForm";
-import ShipperSignUpForm from "@/app/_components/ShipperSignUpForm";
-import SwitchTabButton from "@/app/_components/SwitchTab";
-import {signUpAction, signInAction} from "@/app/_lib/server/auth/actions";
+import AuthLayout from "@/features/auth/components/AuthLayout";
+import CarrierSignUpForm from "@/features/auth/components/CarrierSignUpForm";
+import ShipperSignUpForm from "@/features/auth/components/ShipperSignUpForm";
+import SwitchTabButton from "@/components/ui/SwitchTab";
+import {signUpAction, signInAction} from "@/features/auth/actions";
+import {getTruckTypes} from "@/lib/truck-types";
 import {Metadata} from "next";
 
 export const metaData: Metadata = {
@@ -15,18 +16,22 @@ const SignUpPage = async ({
   params: {role: "shipper" | "carrier"};
 }) => {
   const {role} = await params;
+  const truckTypes = role === "carrier" ? await getTruckTypes() : [];
 
   return (
-    <AuthLayout heading={`Sign Up ${role} account `} intro="">
+    <AuthLayout
+      heading="Choose your account type to get started"
+      intro="Join Luggiztik"
+    >
       <SwitchTabButton
         options={[
           {
             href: "/signup/shipper",
-            name: "I need to ship Cargo",
+            name: "I need to ship cargo",
           },
           {
             href: "/signup/carrier",
-            name: "I own a truck",
+            name: "I own trucks",
           },
         ]}
       />
@@ -40,6 +45,7 @@ const SignUpPage = async ({
         <CarrierSignUpForm
           signUpAction={signUpAction}
           signInAction={signInAction}
+          truckTypes={truckTypes}
         />
       )}
     </AuthLayout>

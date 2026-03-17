@@ -1,6 +1,7 @@
-import PostLoad from "@/app/_components/PostLoad";
-import {auth} from "@/app/_lib/server/auth";
+import PostLoad from "@/features/shipper/components/PostLoad";
+import {auth} from "@/features/auth/auth";
 import {redirect} from "next/navigation";
+import {getTruckTypes} from "@/lib/truck-types";
 
 const Page = async () => {
   const session = await auth();
@@ -8,7 +9,10 @@ const Page = async () => {
   if (!session?.user) {
     redirect("/signin");
   }
-  return <PostLoad />;
+
+  const truckTypes = await getTruckTypes();
+
+  return <PostLoad truckTypes={truckTypes} />;
 };
 
 export default Page;

@@ -1,18 +1,15 @@
-//import SwitchTabButton from "@/app/_components/SwitchTab";
-//import OverViewBox from "@/app/_components/OverViewBox";
-import OverviewTable from "@/app/_components/OverviewTable";
-import DashboardOverview from "@/app/_components/DashboardOverview";
+import DashboardOverview from "@/features/shipper/components/DashboardOverview";
+import {getShipperRecentActivities, getShipperStats} from "@/features/shipment/actions";
 import {Metadata} from "next";
-import Filter from "@/app/_components/Filter";
-import {auth} from "@/app/_lib/server/auth";
+import {auth} from "@/features/auth/auth";
 import {redirect} from "next/navigation";
 
-export const metaData: Metadata = {
+export const metadata: Metadata = {
   title: "Shippers Dashboard",
 };
 
 type PageProps = {
-  searchParams?: {[key: string]: string | string[] | undefined};
+  searchParams?: Promise<{[key: string]: string | string[] | undefined}>;
 };
 
 const Page = async ({searchParams}: PageProps) => {
@@ -21,23 +18,18 @@ const Page = async ({searchParams}: PageProps) => {
   if (!session?.user) {
     redirect("/signin");
   }
-  const {status} = (await searchParams) ?? {};
 
-  const filter = Array.isArray(status) ? status[0] : (status ?? "all");
-  return (
-    <div>
-      <DashboardOverview earnings="$2.4M" completed="156" rating="4.9">
-        12 Active Shipments
-      </DashboardOverview>
-      <OverviewTable status={filter}>
-        <div>
-          <h1 className="text-brand-1 font-bold text-lg">My Shipments</h1>
-          <p className="font-bold">View and manage all your shipments</p>
-        </div>
-        <Filter />
-      </OverviewTable>
-    </div>
-  );
+  const [activities, stats] = await Promise.all([
+    getShipperRecentActivities(),
+    getShipperStats(),
+  ]);
+
+  const resolved = await searchParams;
+  const status = Array.isArray(resolved?.status)
+    ? resolved.status[0]
+    : (resolved?.status ?? "all");
+
+  return <DashboardOverview activities={activities} stats={stats} status={status} />;
 };
 
 export default Page;

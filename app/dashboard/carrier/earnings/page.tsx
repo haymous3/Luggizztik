@@ -1,6 +1,7 @@
-import Earnings from "@/app/_components/Earnings";
-import {auth} from "@/app/_lib/server/auth";
+import Earnings from "@/features/carrier/components/Earnings";
+import {auth} from "@/features/auth/auth";
 import {redirect} from "next/navigation";
+import {getCarrierEarnings} from "@/features/carrier/actions";
 
 const Page = async () => {
   const session = await auth();
@@ -8,7 +9,10 @@ const Page = async () => {
   if (!session?.user) {
     redirect("/signin");
   }
-  return <Earnings />;
+
+  const {summary, history} = await getCarrierEarnings();
+
+  return <Earnings summary={summary} history={history} />;
 };
 
 export default Page;

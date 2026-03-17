@@ -20,182 +20,417 @@ enum Role {
 }
 
 
-// model User {
-//   id       Int     @id @default(autoincrement())
-//   email    String  @unique
-//   username String?  @unique  
-//   name     String?
-//   password String
-//   phoneNumber String
-//   address String
-//   companyName String @unique
-//   driverLicense String?
-//   truckType String?
-//   loadCapacity String?
-//   plateNumber String?
-//   yearOfManufacture String?
-//   role Role @default(shipper)
-//   shipments Shipment[]
-//   bids Bid[]
-//   @@index([role])               //  for fast filtering by role
-//   @@index([companyName])  
 
-// } 
+
+
+
 
 model User {
-  id              Int      @id @default(autoincrement())
-  email           String   @unique
-  username        String?  @unique  
-  name            String?
-  password        String
-  phoneNumber     String
-  address         String
-  companyName     String   @unique
-  driverLicense   String?
-  truckType       String?
-  loadCapacity    String?
-  plateNumber     String?
-  yearOfManufacture String?
-  role            Role     @default(shipper)
+  id                   Int      @id @default(autoincrement())
+  email                String   @unique
+  username             String?  @unique
+  name                 String?
+  password             String
+  phoneNumber          String
+  role                 Role
+  profileImageUrl      String?
+  onboardingCompleted  Boolean  @default(false)
+  onboardingStep       Int      @default(0)
 
-  shipments       Shipment[]
-  bids            Bid[]
-  jobs            Job[]     @relation("DriverJobs")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  shipments   Shipment[]
+  bids        Bid[]
+  driverJobs  Job[]    @relation("DriverJobs")
+
+  carrier     CarrierCompany?
+  driver      Driver?
 
   @@index([role])
-  @@index([companyName])
+}
+
+model CarrierCompany {
+  id          Int     @id @default(autoincrement())
+  userId      Int     @unique
+  companyName String  @unique
+  address     String?
+
+  user        User    @relation(fields: [userId], references: [id])
+
+  trucks      Truck[]
+  drivers     Driver[]
+  routes      CarrierRoute[]
+  profile     CarrierProfile?
+  documents   CarrierDocument[]
+
+  createdAt DateTime @default(now())
 }
 
 
-// model Shipment {
-//   id Int @id @default(autoincrement())
-//   // name String
-//   cargoType String
-//   pickupLocation String
-//   deliveryLocation String
-//   additionalNote String?
-//   budget Json
-//   weight Int
-//   shipperId Int
-//   shipper   User      @relation(fields: [shipperId], references: [id], onDelete: Cascade)
-//   urgent Boolean @default(false)
-//   pickupDate DateTime
-//   deliveryDate DateTime
-//   bids Bid[]
-//   distance Int?
-//   @@index([shipperId])        //  speeds up queries by shipper
-//   @@index([urgent])           //  speeds up filtering urgent shipments
-//   @@index([pickupDate])       //  useful for scheduling
-//   @@index([deliveryDate])     //  useful for tracking
-// }
+
+model Driver {
+  id            Int     @id @default(autoincrement())
+  userId        Int     @unique
+  carrierId     Int
+  licenseNumber String
+
+  user          User    @relation(fields: [userId], references: [id])
+  carrier       CarrierCompany @relation(fields: [carrierId], references: [id])
+
+  jobs          Job[]
+  trucks        Truck[]
+
+  @@index([carrierId])
+  createdAt DateTime @default(now())
+}
+
+model Truck {
+  id               Int     @id @default(autoincrement())
+  carrierId        Int
+  driverId         Int?
+
+  truckType        String
+  loadCapacity     Int
+  plateNumber      String  @unique
+  yearOfManufacture Int
+
+  status           TruckStatus @default(AVAILABLE)
+  imageUrl         String?
+
+  carrier          CarrierCompany @relation(fields: [carrierId], references: [id])
+  driver           Driver? @relation(fields: [driverId], references: [id])
+
+  jobs             Job[]
+  locations        TruckLocation[]
+
+  @@index([carrierId])
+  createdAt DateTime @default(now())
+}
+
+enum TruckStatus {
+  AVAILABLE
+  IN_USE
+  MAINTENANCE
+}
+
+model TruckType {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+}
+
+model Location {
+  id        Int @id @default(autoincrement())
+  address   String
+  city      String
+  state     String
+  country   String
+  latitude  Float
+  longitude Float
+
+  pickups   Shipment[] @relation("PickupLocation")
+  deliveries Shipment[] @relation("DeliveryLocation")
+}
+
 
 model Shipment {
-  id                Int      @id @default(autoincrement())
-  cargoType         String
-  pickupLocation    String
-  deliveryLocation  String
-  additionalNote    String?
-  budget            Json
-  weight            Int
-  shipperId         Int
-  shipper           User     @relation(fields: [shipperId], references: [id], onDelete: Cascade)
-  urgent            Boolean  @default(false)
-  pickupDate        DateTime
-  deliveryDate      DateTime
-  distance          Int?
+  id               Int      @id @default(autoincrement())
 
-  // All bids for this shipment
-  bids              Bid[]    @relation("ShipmentBids")
+  cargoType        String
+  weight           Int
+  distance         Int?
 
-  // The accepted bid (1-to-1)
-  acceptedBidId     Int?     @unique
-  acceptedBid       Bid?     @relation("SelectedBid", fields: [acceptedBidId], references: [id])
+  shipperId        Int
+  shipper          User     @relation(fields: [shipperId], references: [id])
 
-  // The job created from this shipment
-  job               Job?
+  pickupLocationId Int
+  deliveryLocationId Int
+
+
+
+  pickupLocation   Location @relation("PickupLocation", fields: [pickupLocationId], references: [id])
+  deliveryLocation Location @relation("DeliveryLocation", fields: [deliveryLocationId], references: [id])
+
+  pickupDate       DateTime
+  deliveryDate     DateTime
+
+  urgent           Boolean  @default(false)
+  additionalNote   String?
+
+  budgetMin        Int
+  budgetMax        Int
+
+  bids             Bid[]    @relation("ShipmentBids")
+
+  acceptedBidId    Int?     @unique
+  acceptedBid      Bid?     @relation("SelectedBid", fields: [acceptedBidId], references: [id])
+
+  job              Job?
+
+  createdAt        DateTime @default(now())
 
   @@index([shipperId])
-  @@index([urgent])
   @@index([pickupDate])
   @@index([deliveryDate])
-  @@index([acceptedBidId])
 }
 
 
+enum ShipmentStatus {
+  OPEN
+  BIDDING
+  BID_ACCEPTED
+  IN_TRANSIT
+  DELIVERED
+  CANCELLED
+}
 
-
-// model Bid {
-//   id          Int      @id @default(autoincrement())
-//   amount      Int      // You can store bid amount here
-//   createdAt   DateTime @default(now())
-//   userId      Int
-//   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-//   shipmentId  Int
-//   shipment    Shipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
-//   @@index([userId])
-//   @@index([shipmentId])
-//   @@unique([userId, shipmentId]) // prevents the same user from bidding twice on the same shipment
-// }
 
 model Bid {
-  id            Int        @id @default(autoincrement())
-  amount        Int
-  createdAt     DateTime   @default(now())
+  id         Int      @id @default(autoincrement())
+  amount     Int
+  status     BidStatus @default(PENDING)
+  createdAt  DateTime @default(now())
 
-  userId        Int
-  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
 
-  shipmentId    Int
-  shipment      Shipment   @relation("ShipmentBids", fields: [shipmentId], references: [id], onDelete: Cascade)
+  shipmentId Int
+  shipment   Shipment @relation("ShipmentBids", fields: [shipmentId], references: [id])
 
-  // 1-to-1 reverse side of SelectedBid
-  selectedFor   Shipment?  @relation("SelectedBid")
+  selectedFor Shipment? @relation("SelectedBid")
 
-  // 1-to-1 reverse side of Job
-  job           Job?
+  job        Job?
 
-  @@index([userId])
-  @@index([shipmentId])
   @@unique([userId, shipmentId])
+  @@index([shipmentId])
+
 }
 
+
+enum BidStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+}
+
+
+model Tracking {
+  id         Int      @id @default(autoincrement())
+
+  jobId      Int
+  driverId   Int
+
+  latitude   Float
+  longitude  Float
+
+  recordedAt DateTime @default(now())
+
+  job        Job @relation(fields: [jobId], references: [id])
+
+  @@index([jobId])
+  @@index([recordedAt])
+}
 
 
 
 model Job {
-  id           Int       @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
 
-  shipmentId   Int       @unique
-  shipment     Shipment  @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  shipmentId  Int       @unique
+  shipment    Shipment  @relation(fields: [shipmentId], references: [id])
 
-  driverId     Int
-  driver       User      @relation("DriverJobs", fields: [driverId], references: [id], onDelete: Cascade)
+  driverId    Int
+  driver      Driver    @relation(fields: [driverId], references: [id])
 
-  // 1-to-1 relation with Bid
-  bidId        Int       @unique
-  bid          Bid       @relation(fields: [bidId], references: [id])
+  driverUserId Int?
+  driverUser   User?    @relation("DriverJobs", fields: [driverUserId], references: [id])
 
-  status       JobStatus @default(PENDING)
-  currentLat   Float?
-  currentLng   Float?
-  startedAt    DateTime?
-  completedAt  DateTime?
-  updatedAt    DateTime @updatedAt
+  truckId     Int
+  truck       Truck     @relation(fields: [truckId], references: [id])
+
+  bidId       Int       @unique
+  bid         Bid       @relation(fields: [bidId], references: [id])
+
+  status      JobStatus @default(CREATED)
+
+  startedAt   DateTime?
+  completedAt DateTime?
+  updatedAt   DateTime @updatedAt
+
+  trackings          Tracking[]
+  shipmentTrackings  ShipmentTracking[]
 
   @@index([driverId])
   @@index([shipmentId])
-  @@index([bidId])
+}
+
+model CarrierRoute {
+  id            Int @id @default(autoincrement())
+
+  carrierId     Int
+  originCity    String
+  destinationCity String
+
+  frequency     RouteFrequency
+
+  carrier       CarrierCompany @relation(fields: [carrierId], references: [id])
+
+  @@index([originCity, destinationCity])
+}
+
+enum RouteFrequency {
+  DAILY
+  WEEKLY
+  OCCASIONAL
+}
+
+
+
+model TruckLocation {
+  id        Int @id @default(autoincrement())
+
+  truckId   Int
+  latitude  Float
+  longitude Float
+
+  updatedAt DateTime @updatedAt
+
+  truck     Truck @relation(fields: [truckId], references: [id])
+
+  @@index([latitude, longitude])
 }
 
 
 enum JobStatus {
-  PENDING
-  ACCEPTED
-  IN_TRANSIT
+  CREATED
+  DRIVER_ASSIGNED
+  DRIVER_EN_ROUTE
   ARRIVED_PICKUP
+  LOADING
   LOADED
-  EN_ROUTE
+  IN_TRANSIT
+  ARRIVED_DESTINATION
+  UNLOADING
   DELIVERED
   COMPLETED
   CANCELLED
+}
+
+
+model ShipmentTracking {
+  id        Int @id @default(autoincrement())
+
+  jobId     Int
+  latitude  Float
+  longitude Float
+  speed     Float?
+
+  recordedAt DateTime @default(now())
+
+  job       Job @relation(fields: [jobId], references: [id])
+
+  @@index([jobId])
+  @@index([recordedAt])
+}
+
+model PricingRule {
+  id           Int @id @default(autoincrement())
+
+  truckType    String
+  ratePerKm    Float
+  ratePerTon   Float
+  baseFare     Float
+}
+
+
+model Review {
+  id          Int @id @default(autoincrement())
+
+  shipmentId  Int
+  reviewerId  Int
+  carrierId   Int
+
+  rating      Int
+  comment     String?
+
+  createdAt   DateTime @default(now())
+}
+
+model Notification {
+  id        Int @id @default(autoincrement())
+
+  userId    Int
+  title     String
+  message   String
+
+  read      Boolean @default(false)
+
+  createdAt DateTime @default(now())
+}
+
+
+model CarrierVerification {
+  id        Int @id @default(autoincrement())
+
+  carrierId Int
+  status    VerificationStatus
+
+  documentUrl String?
+
+  createdAt DateTime @default(now())
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+
+model CarrierProfile {
+  id                   Int      @id @default(autoincrement())
+  carrierId            Int      @unique
+  carrier              CarrierCompany @relation(fields: [carrierId], references: [id])
+
+  baseCity             String?
+  preferredRoutes      String?
+  availableDays        String?
+  availableFrom        String?
+  availableTo          String?
+  loadTypes            String?
+
+  preferredJobTypes    String?
+  minPrice             Int?
+  maxPrice             Int?
+  maxDistance           Int?
+  notifyMatchingJobs   Boolean  @default(false)
+  showOutsidePrefs     Boolean  @default(false)
+  notifyWorkHoursOnly  Boolean  @default(false)
+
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+
+model CarrierDocument {
+  id          Int            @id @default(autoincrement())
+  carrierId   Int
+  carrier     CarrierCompany @relation(fields: [carrierId], references: [id])
+
+  type        String
+  fileName    String
+  url         String?
+  status      DocumentStatus @default(PENDING)
+
+  createdAt   DateTime @default(now())
+
+  @@index([carrierId])
+}
+
+enum DocumentStatus {
+  PENDING
+  VERIFIED
+  REJECTED
 }
