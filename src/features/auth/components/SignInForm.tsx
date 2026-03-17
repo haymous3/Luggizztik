@@ -54,7 +54,7 @@ export default function SignInForm() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6 w-full min-w-0">
       {/* Role toggle */}
       <div className="rounded-xl bg-brand-5 p-1.5 border border-brand-4">
         <div className="grid grid-cols-2 gap-1">

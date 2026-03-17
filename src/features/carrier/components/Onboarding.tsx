@@ -213,7 +213,7 @@ const Onboarding = ({truckTypes, initialStep}: OnboardingProps) => {
     "h-5 w-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer";
 
   return (
-    <div className="max-w-3xl mx-auto py-8 pb-16">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-12 sm:pb-16">
       {/* Step 1: Truck image header */}
       {step === 1 && (
         <div className="relative w-full h-48 rounded-xl overflow-hidden mb-6">
@@ -408,7 +408,7 @@ const Onboarding = ({truckTypes, initialStep}: OnboardingProps) => {
               <h3 className="font-semibold text-gray-900 mb-3">
                 Availability Time
               </h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <input
                   type="time"
                   placeholder="From"
@@ -502,7 +502,7 @@ const Onboarding = ({truckTypes, initialStep}: OnboardingProps) => {
               <h3 className="font-semibold text-gray-900 mb-3">
                 Preferred Price Range
               </h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <input
                   type="text"
                   placeholder="50,000"
@@ -621,7 +621,7 @@ const Onboarding = ({truckTypes, initialStep}: OnboardingProps) => {
 
       {/* ---------- STEP 5: Review & Confirm ---------- */}
       {step === 5 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 mb-6">
               Review & Confirm

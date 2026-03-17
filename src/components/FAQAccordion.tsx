@@ -18,10 +18,10 @@ export function FAQAccordion({ items }: { items: FAQItem[] }) {
           <button
             type="button"
             onClick={() => setOpenIndex(openIndex === index ? null : index)}
-            className="flex w-full items-center justify-between px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors"
+            className="flex w-full items-center justify-between gap-3 px-4 sm:px-6 py-3 sm:py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors"
             suppressHydrationWarning
           >
-            <span className="font-medium">{item.question}</span>
+            <span className="font-medium text-sm sm:text-base">{item.question}</span>
             <ChevronDownIcon
               className={`h-5 w-5 shrink-0 text-brand-1 transition-transform ${
                 openIndex === index ? "rotate-180" : ""
@@ -29,7 +29,7 @@ export function FAQAccordion({ items }: { items: FAQItem[] }) {
             />
           </button>
           {openIndex === index && (
-            <div className="border-t border-gray-100 px-6 py-4 text-gray-600">
+            <div className="border-t border-gray-100 px-4 sm:px-6 py-3 sm:py-4 text-gray-600 text-sm sm:text-base">
               {item.answer}
             </div>
           )}

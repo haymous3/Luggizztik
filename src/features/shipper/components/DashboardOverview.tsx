@@ -27,39 +27,39 @@ const DashboardOverview = ({
   return (
     <div className="space-y-6 mt-4">
       {/* Top section: Active Shipments + Map */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Left: Active Shipments + Stats */}
         <div className="space-y-4">
-          <div className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 rounded-xl p-6 shadow-sm">
+          <div className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 rounded-xl p-4 sm:p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-2">
               <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-gray-100">
                 <CubeIcon className="w-5 h-5 text-gray-600" />
               </div>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
               {stats.activeShipments}
-              <span className="text-lg font-semibold text-gray-600 ml-2">
+              <span className="text-base sm:text-lg font-semibold text-gray-600 ml-2">
                 Active Shipment{stats.activeShipments !== 1 ? "s" : ""}
               </span>
             </h2>
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
-            <div className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 rounded-xl p-5 shadow-sm">
-              <p className="text-sm text-gray-500 font-medium">Total Spent</p>
-              <p className="text-xl font-bold text-gray-900 mt-1">
+          <div className="grid grid-cols-3 gap-3 sm:gap-4">
+            <div className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 rounded-xl p-4 sm:p-5 shadow-sm min-w-0">
+              <p className="text-xs sm:text-sm text-gray-500 font-medium truncate">Total Spent</p>
+              <p className="text-lg sm:text-xl font-bold text-gray-900 mt-1 truncate">
                 {formatNaira(stats.totalSpent)}
               </p>
             </div>
-            <div className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 rounded-xl p-5 shadow-sm">
-              <p className="text-sm text-gray-500 font-medium">Completed</p>
-              <p className="text-xl font-bold text-gray-900 mt-1">
+            <div className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 rounded-xl p-4 sm:p-5 shadow-sm min-w-0">
+              <p className="text-xs sm:text-sm text-gray-500 font-medium">Completed</p>
+              <p className="text-lg sm:text-xl font-bold text-gray-900 mt-1">
                 {stats.completedShipments}
               </p>
             </div>
-            <div className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 rounded-xl p-5 shadow-sm">
-              <p className="text-sm text-gray-500 font-medium">Rating</p>
-              <p className="text-xl font-bold text-gray-900 mt-1 flex items-center gap-1">
+            <div className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 rounded-xl p-4 sm:p-5 shadow-sm min-w-0">
+              <p className="text-xs sm:text-sm text-gray-500 font-medium">Rating</p>
+              <p className="text-lg sm:text-xl font-bold text-gray-900 mt-1 flex items-center gap-1">
                 <StarIcon className="w-5 h-5 text-amber-400 fill-amber-400" />
                 —
               </p>

@@ -34,6 +34,25 @@ services:
         condition: service_healthy
     restart: "no"
 
+  # Seeds the database (truck types, etc.). Run after migrations. One-off.
+  # Default: seeds the Postgres container above (same compose).
+  # To seed a different DB (e.g. production): pass DATABASE_URL when running:
+  #   docker compose run --rm -e DATABASE_URL="postgresql://user:pass@host:5432/dbname" prisma-seed
+  prisma-seed:
+    image: node:20-alpine
+    container_name: luggizztik-prisma-seed
+    working_dir: /app
+    environment:
+      DATABASE_URL: "postgresql://luggizztik:luggizztik_secret@postgres:5432/luggizztik"
+      DIRECT_URL: "postgresql://luggizztik:luggizztik_secret@postgres:5432/luggizztik"
+    volumes:
+      - .:/app
+    command: sh -c "set -e && npm install --include=dev && npx prisma generate && echo 'Running seed for database...' && npx prisma db seed && echo 'Seed finished successfully.'"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
   # Prisma Studio — browse & edit your DB at http://localhost:5555
   # Uses postgres:5432 so the container can reach the DB (not localhost from .env).
   prisma-studio:

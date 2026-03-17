@@ -21,7 +21,7 @@ const ShipperSignUpForm = ({ signUpAction, signInAction }: SignUpFormProps) => {
       toast.error(res.message);
     }
   }
-
+  
   return (
     <form action={handleSubmit} className="space-y-6">
       <input type="hidden" name="role" value="shipper" />

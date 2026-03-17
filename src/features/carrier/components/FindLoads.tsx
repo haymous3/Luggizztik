@@ -32,9 +32,9 @@ const FindLoads = ({shipments}: FindLoadsProps) => {
     <MenusProvider>
       <Table.Root>
         <Table.Header>
-          <div className="flex flex-wrap justify-between items-center gap-4">
-            <div>
-              <h1 className="text-gray-900 font-bold text-lg">
+          <div className="flex flex-col sm:flex-row flex-wrap justify-between items-stretch sm:items-center gap-3 sm:gap-4">
+            <div className="min-w-0">
+              <h1 className="text-gray-900 font-bold text-base sm:text-lg">
                 Available Loads
               </h1>
               <p className="text-sm text-gray-500">

@@ -46,7 +46,7 @@ const HeaderIcons = ({role}: HeaderIconsProps) => {
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
   return (
-    <div className="flex gap-5 items-center">
+    <div className="flex gap-2 sm:gap-5 items-center shrink-0">
       {icons.map((item) => {
         const href =
           "hrefByRole" in item

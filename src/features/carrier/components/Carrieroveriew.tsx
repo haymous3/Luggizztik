@@ -30,64 +30,64 @@ const CarrierOverview = ({
   return (
     <div className="space-y-6 mt-4">
       {!onboardingCompleted && (
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-5 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 min-w-0">
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3 min-w-0">
             <div className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full bg-amber-100">
               <ExclamationTriangleIcon className="w-5 h-5 text-amber-600" />
             </div>
             <div className="min-w-0">
-              <h3 className="font-semibold text-amber-900">
+              <h3 className="font-semibold text-amber-900 text-sm sm:text-base">
                 Complete your profile for better job opportunities
               </h3>
-              <p className="text-sm text-amber-700 hidden sm:block">
+              <p className="text-sm text-amber-700 hidden sm:block mt-0.5">
                 Carriers with complete profiles get 3x more job matches. Set up your truck, routes, and preferences.
               </p>
             </div>
           </div>
           <Link
             href="/dashboard/carrier/onboarding"
-            className="flex-shrink-0 px-5 py-2.5 bg-emerald-600 text-white text-sm font-semibold rounded-lg hover:bg-emerald-700 transition-colors"
+            className="flex-shrink-0 px-5 py-2.5 bg-emerald-600 text-white text-sm font-semibold rounded-lg hover:bg-emerald-700 transition-colors text-center"
           >
             Complete Profile
           </Link>
         </div>
       )}
       {/* Top section: Active Jobs + Map */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Left: Active Jobs + Stats */}
         <div className="space-y-4">
-          <div className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 rounded-xl p-6 shadow-sm">
+          <div className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 rounded-xl p-4 sm:p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-2">
               <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-gray-100">
                 <TruckIcon className="w-5 h-5 text-gray-600" />
               </div>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
               {stats.activeJobs}
-              <span className="text-lg font-semibold text-gray-600 ml-2">
+              <span className="text-base sm:text-lg font-semibold text-gray-600 ml-2">
                 Active Job{stats.activeJobs !== 1 ? "s" : ""}
               </span>
             </h2>
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
-            <div className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 rounded-xl p-5 shadow-sm">
-              <p className="text-sm text-gray-500 font-medium">
+          <div className="grid grid-cols-3 gap-3 sm:gap-4">
+            <div className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 rounded-xl p-4 sm:p-5 shadow-sm min-w-0">
+              <p className="text-xs sm:text-sm text-gray-500 font-medium truncate">
                 Month Earnings
               </p>
-              <p className="text-xl font-bold text-gray-900 mt-1">
+              <p className="text-lg sm:text-xl font-bold text-gray-900 mt-1 truncate">
                 {formatNaira(stats.monthEarnings)}
               </p>
             </div>
-            <div className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 rounded-xl p-5 shadow-sm">
-              <p className="text-sm text-gray-500 font-medium">Completed</p>
-              <p className="text-xl font-bold text-gray-900 mt-1">
+            <div className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 rounded-xl p-4 sm:p-5 shadow-sm min-w-0">
+              <p className="text-xs sm:text-sm text-gray-500 font-medium">Completed</p>
+              <p className="text-lg sm:text-xl font-bold text-gray-900 mt-1">
                 {stats.completedJobs}
               </p>
             </div>
-            <div className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 rounded-xl p-5 shadow-sm">
-              <p className="text-sm text-gray-500 font-medium">Rating</p>
-              <p className="text-xl font-bold text-gray-900 mt-1 flex items-center gap-1">
+            <div className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 rounded-xl p-4 sm:p-5 shadow-sm min-w-0">
+              <p className="text-xs sm:text-sm text-gray-500 font-medium">Rating</p>
+              <p className="text-lg sm:text-xl font-bold text-gray-900 mt-1 flex items-center gap-1">
                 <StarIcon className="w-5 h-5 text-amber-400 fill-amber-400" />
                 —
               </p>

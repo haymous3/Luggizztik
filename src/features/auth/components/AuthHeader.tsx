@@ -10,18 +10,18 @@ export const AuthHeader = async () => {
   const role = session?.user.role ?? "carrier";
 
   return (
-    <div>
-      <div className="flex justify-between items-center">
+    <div className="min-w-0">
+      <div className="flex justify-between items-center gap-4">
         <Logo />
         <HeaderIcons role={role} />
       </div>
-      <div className="mt-10">
-        <h2 className="text-brand-1 font-bold text-2xl">Hey, {name}</h2>
+      <div className="mt-6 sm:mt-10">
+        <h2 className="text-brand-1 font-bold text-xl sm:text-2xl truncate">Hey, {name}</h2>
       </div>
 
       {role === "shipper" ? (
-        <div>
-          <h2>Manage your shipments and track your logistics operations</h2>
+        <div className="min-w-0">
+          <h2 className="text-sm sm:text-base text-muted-foreground mt-1">Manage your shipments and track your logistics operations</h2>
 
           <SwitchTabButton
             options={[
@@ -33,8 +33,8 @@ export const AuthHeader = async () => {
           />
         </div>
       ) : (
-        <div>
-          <h2>Find loads, manage your routes, and track your earnings</h2>
+        <div className="min-w-0">
+          <h2 className="text-sm sm:text-base text-muted-foreground mt-1">Find loads, manage your routes, and track your earnings</h2>
           <SwitchTabButton
             options={[
               {href: "/dashboard/carrier", name: "Overview"},

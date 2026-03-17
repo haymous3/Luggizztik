@@ -179,11 +179,11 @@ export default function PricingPage() {
   return (
     <PublicLayout activeNav="pricing" wrapperClassName="min-h-screen flex flex-col bg-brand-5">
       {/* Hero */}
-      <section className="py-16 lg:py-24">
+      <section className="py-10 sm:py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+          <div className="grid gap-8 sm:gap-12 lg:grid-cols-2 lg:items-center">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight text-brand-1 sm:text-4xl lg:text-5xl">
+              <h1 className="text-2xl  font-bold tracking-tight text-brand-1 sm:text-4xl lg:text-5xl">
                 Simple, Fair Pricing for Everyone
               </h1>
               <p className="mt-6 text-lg text-gray-600">
@@ -206,15 +206,15 @@ export default function PricingPage() {
       </section>
 
       {/* For Shippers */}
-      <section className="py-16 lg:py-24">
+      <section className="py-10 sm:py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-3xl font-bold text-brand-1">
+          <h2 className="text-center text-2xl sm:text-3xl font-bold text-brand-1">
             For Shippers
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
+          <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600 text-sm sm:text-base">
             Find the perfect plan to get your stuff to your shipping destination.
           </p>
-          <div className="mt-12 grid gap-8 md:grid-cols-3">
+          <div className="mt-8 sm:mt-12 grid gap-6 sm:gap-8 grid-cols-1 md:grid-cols-3">
             {shipperPlans.map((plan) => (
               <article
                 key={plan.title}
@@ -248,15 +248,15 @@ export default function PricingPage() {
       </section>
 
       {/* For Carriers */}
-      <section className="py-16 lg:py-24">
+      <section className="py-10 sm:py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-3xl font-bold text-brand-1">
+          <h2 className="text-center text-2xl sm:text-3xl font-bold text-brand-1">
             For Carriers
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
+          <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600 text-sm sm:text-base">
             Commission-based pricing – you only pay when you earn.
           </p>
-          <div className="mt-12 grid gap-8 md:grid-cols-3">
+          <div className="mt-8 sm:mt-12 grid gap-6 sm:gap-8 grid-cols-1 md:grid-cols-3">
             {carrierPlans.map((plan) => (
               <article
                 key={plan.title}
@@ -301,15 +301,15 @@ export default function PricingPage() {
       </section>
 
       {/* Additional Services */}
-      <section className="py-16 lg:py-24">
+      <section className="py-10 sm:py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-3xl font-bold text-brand-1">
+          <h2 className="text-center text-2xl sm:text-3xl font-bold text-brand-1">
             Additional Services
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
+          <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600 text-sm sm:text-base">
             Enhance your shipping experience.
           </p>
-          <div className="mt-12 grid gap-8 sm:grid-cols-2">
+          <div className="mt-8 sm:mt-12 grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2">
             {additionalServices.map((service) => (
               <article
                 key={service.title}
@@ -340,9 +340,9 @@ export default function PricingPage() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="py-16 lg:py-24">
+      <section id="faq" className="py-10 sm:py-16 lg:py-24">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-3xl font-bold text-brand-1">
+          <h2 className="text-center text-2xl sm:text-3xl font-bold text-brand-1">
             Frequently Asked Questions
           </h2>
           <div className="mt-12">
@@ -352,7 +352,7 @@ export default function PricingPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 lg:py-20">
+      <section className="py-10 sm:py-16 lg:py-20">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           <p className="text-lg text-gray-600">
             Ready to get started? Join Luggizztik today!

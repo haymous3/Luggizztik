@@ -97,10 +97,10 @@ export default function SolutionsPage() {
   return (
     <PublicLayout activeNav="solutions">
       {/* Hero */}
-      <section className="py-16 lg:py-24">
+      <section className="py-10 sm:py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
+          <div className="grid gap-8 sm:gap-12 lg:grid-cols-2 lg:items-center">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-xl order-2 lg:order-1">
               <Image
                 src="/image_1.png"
                 alt="Forklift loading pallets onto truck"
@@ -110,8 +110,8 @@ export default function SolutionsPage() {
                 priority
               />
             </div>
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-brand-1 sm:text-4xl lg:text-5xl">
+            <div className="order-1 lg:order-2">
+              <h1 className="text-2xl  font-bold tracking-tight text-brand-1 sm:text-4xl lg:text-5xl">
                 Tailored Solutions for Every Logistics Need
               </h1>
               <p className="mt-6 text-lg text-gray-600">
@@ -125,15 +125,15 @@ export default function SolutionsPage() {
       </section>
 
       {/* For Shippers */}
-      <section id="shippers" className="bg-gray-50 py-16 lg:py-24">
+      <section id="shippers" className="bg-gray-50 py-10 sm:py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-3xl font-bold text-brand-1">
+          <h2 className="text-center text-2xl sm:text-3xl font-bold text-brand-1">
             For Shippers
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
             Streamline your logistics operations with our comprehensive platform
           </p>
-          <div className="mt-12 grid gap-8 md:grid-cols-3">
+          <div className="mt-8 sm:mt-12 grid gap-6 sm:gap-8 grid-cols-1 md:grid-cols-3">
             {shipperCards.map((card) => (
               <article
                 key={card.title}
@@ -163,15 +163,15 @@ export default function SolutionsPage() {
       </section>
 
       {/* For Carriers */}
-      <section id="carriers" className="py-16 lg:py-24">
+      <section id="carriers" className="py-10 sm:py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-3xl font-bold text-brand-1">
+          <h2 className="text-center text-2xl sm:text-3xl font-bold text-brand-1">
             For Carriers
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
             Maximize your earnings and optimize your routes
           </p>
-          <div className="mt-12 grid gap-8 md:grid-cols-3">
+          <div className="mt-8 sm:mt-12 grid gap-6 sm:gap-8 grid-cols-1 md:grid-cols-3">
             {carrierCards.map((card) => (
               <article
                 key={card.title}
@@ -201,16 +201,16 @@ export default function SolutionsPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-brand-1 py-16 lg:py-20">
+      <section className="bg-brand-1 py-10 sm:py-16 lg:py-20">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-white">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white">
             Ready to Get Started?
           </h2>
           <p className="mt-4 text-lg text-white/90">
             Join thousands of businesses and carriers who trust Luggizztik for
             their logistics needs.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
+          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4">
             <Link
               href="/signup/shipper"
               className="inline-flex rounded-lg bg-brand-2 px-6 py-3 text-base font-semibold text-brand-1 hover:opacity-90 transition-opacity"

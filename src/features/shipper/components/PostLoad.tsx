@@ -35,10 +35,10 @@ const PostLoad = ({truckTypes}: PostLoadProps) => {
   }));
 
   return (
-    <div className="mt-6">
+    <div className="mt-4 sm:mt-6">
       <div className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 rounded-xl shadow-sm overflow-hidden">
         {/* Header */}
-        <div className="px-8 pt-8 pb-4">
+        <div className="px-4 sm:px-6 md:px-8 pt-6 sm:pt-8 pb-4">
           <div className="flex items-center gap-3 mb-1">
             <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-emerald-100">
               <CubeIcon className="w-5 h-5 text-emerald-600" />
@@ -55,9 +55,9 @@ const PostLoad = ({truckTypes}: PostLoadProps) => {
         </div>
 
         {/* Form */}
-        <form className="px-8 pb-8" action={handleSubmit}>
+        <form className="px-4 sm:px-6 md:px-8 pb-6 sm:pb-8" action={handleSubmit}>
           {/* Section: Cargo Details */}
-          <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
+          <div className="bg-white rounded-xl border border-gray-100 p-4 sm:p-6 shadow-sm">
             <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
               Cargo Details
             </h2>
@@ -79,7 +79,7 @@ const PostLoad = ({truckTypes}: PostLoadProps) => {
           </div>
 
           {/* Section: Route */}
-          <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm mt-4">
+          <div className="bg-white rounded-xl border border-gray-100 p-4 sm:p-6 shadow-sm mt-4">
             <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
               Route Information
             </h2>
@@ -102,7 +102,7 @@ const PostLoad = ({truckTypes}: PostLoadProps) => {
           </div>
 
           {/* Section: Schedule */}
-          <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm mt-4">
+          <div className="bg-white rounded-xl border border-gray-100 p-4 sm:p-6 shadow-sm mt-4">
             <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
               Schedule
             </h2>
@@ -123,7 +123,7 @@ const PostLoad = ({truckTypes}: PostLoadProps) => {
           </div>
 
           {/* Section: Budget & Preferences */}
-          <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm mt-4">
+          <div className="bg-white rounded-xl border border-gray-100 p-4 sm:p-6 shadow-sm mt-4">
             <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
               Budget & Preferences
             </h2>

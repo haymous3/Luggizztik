@@ -70,7 +70,7 @@ const Root = ({children, width}: TableRootProps) => {
   return (
     <TableContext.Provider value={{sortColumn, setSortColumn}}>
       <div
-        className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 py-6 px-6 mt-8 rounded-xl shadow-sm"
+        className="bg-gradient-to-r from-rose-950/5 via-white to-green-500/5 border border-gray-100 py-4 px-4 sm:py-6 sm:px-6 mt-4 sm:mt-8 rounded-xl shadow-sm overflow-hidden"
         style={{width}}
       >
         {children}
@@ -116,9 +116,9 @@ const Row = <T extends RowData>({data}: RowProps<T>) => {
   return (
     <ModalProvider>
       <MenusMenu>
-        <div className="flex items-center justify-between bg-white rounded-xl px-5 py-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white rounded-xl px-4 sm:px-5 py-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
           {/* Left: avatar + info */}
-          <div className="flex gap-4 items-center min-w-0">
+          <div className="flex gap-3 sm:gap-4 items-center min-w-0 flex-1">
             {!bids && (
               <div className="flex-shrink-0 flex items-center justify-center h-11 w-11 rounded-full bg-gray-100">
                 <UserCircleIcon className="w-7 h-7 text-gray-400" />
@@ -129,10 +129,10 @@ const Row = <T extends RowData>({data}: RowProps<T>) => {
               <h3 className="font-semibold text-gray-900 truncate">
                 {name || cargoType}
               </h3>
-              <p className="text-sm text-gray-500 mt-0.5">
-                {origin}
-                <span className="mx-1.5 text-gray-400">&rarr;</span>
-                {destination}
+              <p className="text-xs sm:text-sm text-gray-500 mt-0.5 break-words">
+                <span className="inline truncate max-w-full">{origin}</span>
+                <span className="mx-1.5 text-gray-400 shrink-0">&rarr;</span>
+                <span className="inline truncate max-w-full">{destination}</span>
               </p>
               {bids && !isCarrier ? (
                 <p className="text-xs text-emerald-600 font-medium mt-1">
@@ -147,7 +147,7 @@ const Row = <T extends RowData>({data}: RowProps<T>) => {
           </div>
 
           {/* Right: status + actions */}
-          <div className="flex items-center gap-5 flex-shrink-0">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-5 flex-shrink-0 sm:flex-nowrap">
             {showViewBid ? (
               <ModalProvider.Open opens="bidders">
                 <li className="list-none">

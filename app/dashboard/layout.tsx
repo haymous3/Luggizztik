@@ -14,7 +14,7 @@ export default async function Layout({
 
   //const referer = (await headers()).get("referer") || "";
   return (
-    <div className={`${poppins.className} px-[7rem] pt-7`}>
+    <div className={`${poppins.className} px-4 sm:px-6 md:px-8 lg:px-12 xl:px-[7rem] pt-4 sm:pt-7 pb-8`}>
       <AuthHeader />
 
       {children}
