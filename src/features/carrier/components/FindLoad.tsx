@@ -4,7 +4,6 @@ import React from "react";
 import ModalProvider from "@/components/ui/Modal";
 import {Menu as MenusMenu} from "@/components/ui/Menu";
 import {
-  MapPinIcon,
   UserCircleIcon,
   ScaleIcon,
   TruckIcon,

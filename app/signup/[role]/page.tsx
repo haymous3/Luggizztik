@@ -6,14 +6,14 @@ import {signUpAction, signInAction} from "@/features/auth/actions";
 import {getTruckTypes} from "@/lib/truck-types";
 import {Metadata} from "next";
 
-export const metaData: Metadata = {
+export const metadata: Metadata = {
   title: "Sign Up",
 };
 
 const SignUpPage = async ({
   params,
 }: {
-  params: {role: "shipper" | "carrier"};
+  params: Promise<{role: "shipper" | "carrier"}>;
 }) => {
   const {role} = await params;
   const truckTypes = role === "carrier" ? await getTruckTypes() : [];
