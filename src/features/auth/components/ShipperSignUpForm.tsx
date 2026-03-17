@@ -23,9 +23,13 @@ const ShipperSignUpForm = ({ signUpAction, signInAction }: SignUpFormProps) => {
   }
 
   return (
-    <form action={handleSubmit} className="space-y-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
-        <div className="space-y-5">
+    <form action={handleSubmit} className="space-y-6">
+      <input type="hidden" name="role" value="shipper" />
+      <div className="rounded-xl border border-border bg-brand-5/30 p-5 space-y-5">
+        <h3 className="text-sm font-semibold text-brand-1 uppercase tracking-wide">
+          Company & contact
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <InputField
             label="Company Name"
             type="text"
@@ -33,30 +37,16 @@ const ShipperSignUpForm = ({ signUpAction, signInAction }: SignUpFormProps) => {
             placeholder="Your Company LTD"
           />
           <InputField
-            label="Email Address"
-            type="email"
-            name="emailAddress"
-            placeholder="Your@company.com"
-          />
-          <InputField
-            label="Business Address"
-            type="text"
-            name="address"
-            placeholder="123 Business Street, Lagos, Nigeria"
-          />
-          <InputField
-            label="Password"
-            type="password"
-            name="password"
-            placeholder="Create a strong password"
-          />
-        </div>
-        <div className="space-y-5">
-          <InputField
             label="Contact Person"
             type="text"
             name="username"
             placeholder="Your Name"
+          />
+          <InputField
+            label="Email Address"
+            type="email"
+            name="emailAddress"
+            placeholder="you@company.com"
           />
           <InputField
             label="Phone Number"
@@ -64,23 +54,45 @@ const ShipperSignUpForm = ({ signUpAction, signInAction }: SignUpFormProps) => {
             name="phoneNumber"
             placeholder="+234 800 000 0000"
           />
+          <div className="sm:col-span-2">
+            <InputField
+              label="Business Address"
+              type="text"
+              name="address"
+              placeholder="123 Business Street, Lagos, Nigeria"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-border bg-brand-5/30 p-5 space-y-5">
+        <h3 className="text-sm font-semibold text-brand-1 uppercase tracking-wide">
+          Account security
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <InputField
+            label="Password"
+            type="password"
+            name="password"
+            placeholder="Create a strong password"
+          />
           <InputField
             label="Confirm Password"
             type="password"
             name="confirmPassword"
-            placeholder="Confirm your Password"
+            placeholder="Confirm your password"
           />
         </div>
       </div>
 
-      <div className="flex items-start gap-3 mt-4">
+      <label className="flex items-start gap-3 cursor-pointer group rounded-lg p-4 border border-border bg-white hover:bg-brand-5/20 transition-colors">
         <input
           type="checkbox"
           id="termsAndCondition"
           name="termsAccepted"
-          className="mt-1 h-4 w-4 rounded border-border"
+          className="mt-0.5 h-4 w-4 rounded border-border text-brand-1 focus:ring-brand-1 focus:ring-offset-0 cursor-pointer"
         />
-        <label htmlFor="termsAndCondition" className="text-sm text-muted-foreground">
+        <span className="text-sm text-muted-foreground group-hover:text-foreground">
           I agree to the{" "}
           <Link href="/terms" className="text-brand-1 font-medium hover:underline">
             Terms of Service
@@ -89,16 +101,20 @@ const ShipperSignUpForm = ({ signUpAction, signInAction }: SignUpFormProps) => {
           <Link href="/privacy" className="text-brand-1 font-medium hover:underline">
             Privacy Policy
           </Link>
-        </label>
-      </div>
+        </span>
+      </label>
 
-      <Button type="submit" pendingLabel="Creating..." className="w-full">
-        Create a shipper account
+      <Button
+        type="submit"
+        pendingLabel="Creating account..."
+        className="w-full h-11 rounded-lg bg-brand-1 hover:bg-brand-1/90 text-white font-semibold"
+      >
+        Create shipper account
       </Button>
 
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-center text-sm text-muted-foreground pt-1">
         Already have an account?{" "}
-        <Link href="/signin" className="text-brand-1 font-medium hover:underline">
+        <Link href="/signin" className="text-brand-1 font-semibold hover:underline">
           Sign in here
         </Link>
       </p>

@@ -28,116 +28,120 @@ const CarrierSignUpForm = ({ signUpAction, signInAction, truckTypes }: SignUpFor
   }
 
   return (
-    <form action={handleSubmit} className="space-y-5">
-      {/* Personal / Company row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
+    <form action={handleSubmit} className="space-y-6">
+      <input type="hidden" name="role" value="carrier" />
+      {/* Personal & company */}
+      <div className="rounded-xl border border-border bg-brand-5/30 p-5 space-y-5">
+        <h3 className="text-sm font-semibold text-brand-1 uppercase tracking-wide">
+          Personal & company
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <InputField
+            label="Full Name"
+            type="text"
+            name="fullName"
+            placeholder="e.g. John Doe"
+            required
+          />
+          <InputField
+            label="Company Name"
+            type="text"
+            name="companyName"
+            placeholder="e.g. Swift Logistics Ltd"
+            required
+          />
+          <InputField
+            label="Phone Number"
+            type="tel"
+            name="phoneNumber"
+            placeholder="+234 800 000 0000"
+            required
+          />
+          <InputField
+            label="Email Address"
+            type="email"
+            name="emailAddress"
+            placeholder="you@email.com"
+            required
+          />
+        </div>
         <InputField
-          label="Full Name"
+          label="Driver's License Number"
           type="text"
-          name="fullName"
-          placeholder="e.g. John Doe"
-          required
+          name="licenseNumber"
+          placeholder="ABC123456789"
         />
         <InputField
-          label="Company Name"
+          label="Address"
           type="text"
-          name="companyName"
-          placeholder="e.g. Swift Logistics Ltd"
-          required
-        />
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
-        <InputField
-          label="Phone Number"
-          type="tel"
-          name="phoneNumber"
-          placeholder="+234 800 000 0000"
-          required
-        />
-        <InputField
-          label="Email Address"
-          type="email"
-          name="emailAddress"
-          placeholder="John@email.com"
-          required
+          name="address"
+          placeholder="123 Business Street, Lagos, Nigeria"
         />
       </div>
 
-      {/* Identification */}
-      <InputField
-        label="Driver's License Number"
-        type="text"
-        name="licenseNumber"
-        placeholder="ABC123456789"
-      />
-
-      {/* Address - full width */}
-      <InputField
-        label="Address"
-        type="text"
-        name="address"
-        placeholder="123 Business Street, Lagos, Nigeria"
-      />
-
-      {/* Truck Information section */}
-      <h2 className="font-semibold text-foreground pt-2">Truck Information</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
-        <SelectField
-          label="Truck Type"
-          name="truckType"
-          options={truckTypes.map((t) => ({ value: t.name, label: t.name }))}
-          placeholder="Select truck type"
-        />
-        <InputField
-          label="Load Capacity (tons)"
-          type="text"
-          name="loadCapacity"
-          placeholder="e.g., 20"
-        />
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
-        <InputField
-          label="Plate Number"
-          type="text"
-          name="plateNumber"
-          placeholder="ABC-123-XY"
-        />
-        <InputField
-          label="Year of Manufacture"
-          type="text"
-          name="yearOfManufacture"
-          placeholder="2020"
-        />
+      {/* Truck information */}
+      <div className="rounded-xl border border-border bg-brand-5/30 p-5 space-y-5">
+        <h3 className="text-sm font-semibold text-brand-1 uppercase tracking-wide">
+          Truck information
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <SelectField
+            label="Truck Type"
+            name="truckType"
+            options={truckTypes.map((t) => ({ value: t.name, label: t.name }))}
+            placeholder="Select truck type"
+          />
+          <InputField
+            label="Load Capacity (tons)"
+            type="text"
+            name="loadCapacity"
+            placeholder="e.g. 20"
+          />
+          <InputField
+            label="Plate Number"
+            type="text"
+            name="plateNumber"
+            placeholder="ABC-123-XY"
+          />
+          <InputField
+            label="Year of Manufacture"
+            type="text"
+            name="yearOfManufacture"
+            placeholder="e.g. 2020"
+          />
+        </div>
       </div>
 
       {/* Account security */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
-        <InputField
-          label="Password"
-          type="password"
-          name="password"
-          placeholder="Create a strong password"
-        />
-        <InputField
-          label="Confirm Password"
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm your Password"
-        />
+      <div className="rounded-xl border border-border bg-brand-5/30 p-5 space-y-5">
+        <h3 className="text-sm font-semibold text-brand-1 uppercase tracking-wide">
+          Account security
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <InputField
+            label="Password"
+            type="password"
+            name="password"
+            placeholder="Create a strong password"
+          />
+          <InputField
+            label="Confirm Password"
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm your password"
+          />
+        </div>
       </div>
 
-      {/* Terms and Privacy */}
-      <div className="flex items-start gap-3 mt-4">
+      {/* Terms */}
+      <label className="flex items-start gap-3 cursor-pointer group rounded-lg p-4 border border-border bg-white hover:bg-brand-5/20 transition-colors">
         <input
           type="checkbox"
           id="termsAndConditionCarrier"
           name="termsAccepted"
-          className="mt-1 h-4 w-4 rounded border-border"
+          className="mt-0.5 h-4 w-4 rounded border-border text-brand-1 focus:ring-brand-1 focus:ring-offset-0 cursor-pointer"
         />
-        <label
-          htmlFor="termsAndConditionCarrier"
-          className="text-sm text-muted-foreground"
-        >
+        <span className="text-sm text-muted-foreground group-hover:text-foreground">
           I agree to the{" "}
           <Link href="/terms" className="text-brand-1 font-medium hover:underline">
             Terms of Service
@@ -146,16 +150,20 @@ const CarrierSignUpForm = ({ signUpAction, signInAction, truckTypes }: SignUpFor
           <Link href="/privacy" className="text-brand-1 font-medium hover:underline">
             Privacy Policy
           </Link>
-        </label>
-      </div>
+        </span>
+      </label>
 
-      <Button type="submit" pendingLabel="Creating..." className="w-full">
-        Create a Carrier account
+      <Button
+        type="submit"
+        pendingLabel="Creating account..."
+        className="w-full h-11 rounded-lg bg-brand-1 hover:bg-brand-1/90 text-white font-semibold"
+      >
+        Create carrier account
       </Button>
 
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-center text-sm text-muted-foreground pt-1">
         Already have an account?{" "}
-        <Link href="/signin" className="text-brand-1 font-medium hover:underline">
+        <Link href="/signin" className="text-brand-1 font-semibold hover:underline">
           Sign in here
         </Link>
       </p>

@@ -4,14 +4,19 @@ import bcrypt from "bcryptjs";
 
 const globalForPrisma = global as unknown as {prisma: PrismaClient};
 
+function isBcryptHash(value: string): boolean {
+  return typeof value === "string" && /^\$2[aby]\$\d{2}\$/.test(value);
+}
+
 const prisma =
   globalForPrisma.prisma ||
   new PrismaClient().$extends(withAccelerate()).$extends({
     query: {
       user: {
         async create({args, query}) {
-          if (args.data.password) {
-            args.data.password = await bcrypt.hash(args.data.password, 10);
+          const raw = args.data.password;
+          if (raw && typeof raw === "string" && !isBcryptHash(raw)) {
+            args.data.password = await bcrypt.hash(raw, 10);
           }
           return query(args);
         },
@@ -29,7 +34,7 @@ const prisma =
               plainPassword = args.data.password.set;
             }
 
-            if (plainPassword) {
+            if (plainPassword && !isBcryptHash(plainPassword)) {
               const hashed = await bcrypt.hash(plainPassword, 10);
 
               if (typeof args.data.password === "string") {
@@ -55,7 +60,7 @@ const prisma =
               plainPassword = args.data.password.set;
             }
 
-            if (plainPassword) {
+            if (plainPassword && !isBcryptHash(plainPassword)) {
               const hashed = await bcrypt.hash(plainPassword, 10);
 
               if (typeof args.data.password === "string") {

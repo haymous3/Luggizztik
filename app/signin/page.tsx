@@ -1,7 +1,6 @@
 import type {Metadata} from "next";
 
 import SignInForm from "@/features/auth/components/SignInForm";
-import {signInAction} from "@/features/auth/actions";
 import AuthLayout from "@/features/auth/components/AuthLayout";
 
 export const metadata: Metadata = {
@@ -11,7 +10,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <AuthLayout heading="Sign in to your account" intro="Welcome Back">
-      <SignInForm signInAction={signInAction} />
+      <SignInForm />
     </AuthLayout>
   );
 }

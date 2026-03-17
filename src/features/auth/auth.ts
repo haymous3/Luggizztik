@@ -15,8 +15,9 @@ const { auth, signIn, handlers } = NextAuth({
         if (!credentials?.email || !credentials?.password)
           throw new CredentialsSignin("Please provide both email and password");
 
+        const email = (credentials.email as string).trim().toLowerCase();
         const user = await prisma.user.findUnique({
-          where: {email: credentials.email as string},
+          where: { email },
           select: {
             id: true,
             email: true,
