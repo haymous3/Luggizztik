@@ -70,10 +70,10 @@ export default function Home() {
           </p>
           <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4">
             <Link
-              href="#quote"
+              href="/track-shipment"
               className="inline-flex justify-center rounded-lg bg-brand-2 px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold text-brand-1 hover:opacity-90 transition-opacity"
             >
-              Get a Quote Now
+              Track Shipment
             </Link>
             <Link
               href="/signup/shipper"
@@ -243,10 +243,10 @@ export default function Home() {
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link
-              href="#quote"
+              href="/track-shipment"
               className="inline-flex rounded-lg bg-brand-2 px-6 py-3 text-base font-semibold text-brand-1 hover:opacity-90 transition-opacity"
             >
-              Get a Quote Now
+              Track Shipment
             </Link>
             <Link
               href="/solutions"

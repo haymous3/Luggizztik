@@ -7,6 +7,7 @@ import {revalidatePath} from "next/cache";
 
 export type CarrierActivityRow = {
   id: number;
+  trackingId?: string | null;
   name?: string;
   cargoType?: string;
   pickupLocation?: string;
@@ -70,6 +71,7 @@ export async function getCarrierRecentActivities(): Promise<
 
   return jobs.map((job) => ({
     id: job.id,
+    trackingId: job.shipment.trackingId,
     name: job.shipment.cargoType,
     cargoType: job.shipment.cargoType,
     from: job.shipment.pickupLocation.address,

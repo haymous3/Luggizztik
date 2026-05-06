@@ -17,6 +17,8 @@ export type ActiveJob = {
   shipperName: string;
   shipperPhone: string;
   createdAt: string;
+  trackingId: string | null;
+  driverAccessCode: string | null;
 };
 
 type ActiveJobsProps = {
@@ -124,6 +126,17 @@ function JobCard({job}: {job: ActiveJob}) {
         >
           {statusLabel(job.status)}
         </span>
+      </div>
+
+      <div className="mt-3 rounded-lg bg-gray-50 p-3 text-xs text-gray-600">
+        <p>
+          <span className="font-semibold text-gray-700">Tracking ID:</span>{" "}
+          {job.trackingId ?? "Pending assignment"}
+        </p>
+        <p className="mt-1">
+          <span className="font-semibold text-gray-700">Driver Code:</span>{" "}
+          {job.driverAccessCode ?? "Pending assignment"}
+        </p>
       </div>
 
       {/* Contact shipper reveal */}

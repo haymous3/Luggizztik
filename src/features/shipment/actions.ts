@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 
 export type ShipperActivityRow = {
   id: number;
+  trackingId?: string | null;
   name?: string;
   cargoType?: string;
   pickupLocation?: string;
@@ -78,6 +79,7 @@ export async function getShipperRecentActivities(): Promise<ShipperActivityRow[]
     const delivery = s.deliveryLocation;
     return {
       id: s.id,
+      trackingId: s.trackingId,
       name: s.cargoType,
       cargoType: s.cargoType,
       from: pickup.address,

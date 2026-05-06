@@ -81,6 +81,7 @@ model Driver {
 
   jobs          Job[]
   trucks        Truck[]
+  accessCodes   DriverAccessCode[]
 
   @@index([carrierId])
   createdAt DateTime @default(now())
@@ -137,6 +138,7 @@ model Location {
 
 model Shipment {
   id               Int      @id @default(autoincrement())
+  trackingId       String?  @unique
 
   cargoType        String
   weight           Int
@@ -262,9 +264,27 @@ model Job {
 
   trackings          Tracking[]
   shipmentTrackings  ShipmentTracking[]
+  accessCode         DriverAccessCode?
 
   @@index([driverId])
   @@index([shipmentId])
+}
+
+model DriverAccessCode {
+  id         Int      @id @default(autoincrement())
+  code       String   @unique
+  jobId       Int      @unique
+  driverId    Int
+  isActive    Boolean  @default(true)
+  expiresAt   DateTime?
+  usedAt      DateTime?
+  createdAt   DateTime @default(now())
+
+  job        Job      @relation(fields: [jobId], references: [id])
+  driver     Driver   @relation(fields: [driverId], references: [id])
+
+  @@index([driverId])
+  @@index([isActive])
 }
 
 model CarrierRoute {

@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import {auth} from "@/features/auth/auth";
 import {type ActionResult, ok, fail} from "@/lib/action-result";
 import {revalidatePath} from "next/cache";
+import { generateDriverAccessCode, generateTrackingId } from "@/lib/tracking";
 
 export const placeBid = async (formData: FormData): Promise<ActionResult> => {
   try {
@@ -168,12 +169,17 @@ export const selectBidder = async (
         data: {status: "REJECTED"},
       });
 
+      const currentTrackingId = shipment.trackingId ?? generateTrackingId();
+
       await tx.shipment.update({
         where: {id: shipmentId},
-        data: {acceptedBidId: bidId},
+        data: {
+          acceptedBidId: bidId,
+          trackingId: currentTrackingId,
+        },
       });
 
-      await tx.job.create({
+      const job = await tx.job.create({
         data: {
           shipmentId,
           driverId: driver.id,
@@ -183,6 +189,36 @@ export const selectBidder = async (
           status: "CREATED",
         },
       });
+
+      let driverCodeCreated = false;
+      for (let attempt = 0; attempt < 5; attempt++) {
+        try {
+          await tx.driverAccessCode.create({
+            data: {
+              code: generateDriverAccessCode(),
+              jobId: job.id,
+              driverId: driver.id,
+              expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14),
+            },
+          });
+          driverCodeCreated = true;
+          break;
+        } catch (error: unknown) {
+          if (
+            typeof error === "object" &&
+            error !== null &&
+            "code" in error &&
+            (error as { code?: string }).code === "P2002"
+          ) {
+            continue;
+          }
+          throw error;
+        }
+      }
+
+      if (!driverCodeCreated) {
+        return fail("Failed to generate a unique driver access code");
+      }
 
       revalidatePath("/dashboard/shipper/active_bids");
       revalidatePath("/dashboard/carrier/find_loads");

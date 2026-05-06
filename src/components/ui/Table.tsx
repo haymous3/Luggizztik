@@ -3,6 +3,7 @@
 import {createContext, useContext, useState, ReactNode} from "react";
 import {UserCircleIcon, EyeIcon} from "@heroicons/react/24/outline";
 import {usePathname} from "next/navigation";
+import Link from "next/link";
 import ModalProvider from "./Modal";
 import {Menu as MenusMenu} from "./Menu";
 import Bidders from "@/features/shipper/components/Bidders";
@@ -28,6 +29,7 @@ type SubProps = {children: ReactNode};
 
 type RowData = {
   id: number;
+  trackingId?: string | null;
   name?: string;
   cargoType?: string;
   pickupLocation?: string;
@@ -92,6 +94,7 @@ const Row = <T extends RowData>({data}: RowProps<T>) => {
 
   const {
     id,
+    trackingId,
     name,
     cargoType,
     pickupLocation,
@@ -143,6 +146,11 @@ const Row = <T extends RowData>({data}: RowProps<T>) => {
                   Driver: {driver}
                 </p>
               ) : null}
+              {trackingId ? (
+                <p className="text-xs text-gray-400 mt-1">
+                  Tracking ID: {trackingId}
+                </p>
+              ) : null}
             </div>
           </div>
 
@@ -173,10 +181,13 @@ const Row = <T extends RowData>({data}: RowProps<T>) => {
                 </div>
 
                 {!isCarrier && (
-                  <button className="flex items-center gap-2 border border-gray-200 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                  <Link
+                    href={trackingId ? `/track-shipment?trackingId=${encodeURIComponent(trackingId)}` : "/track-shipment"}
+                    className="flex items-center gap-2 border border-gray-200 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                  >
                     <EyeIcon className="w-4 h-4" />
                     Track
-                  </button>
+                  </Link>
                 )}
               </div>
             )}

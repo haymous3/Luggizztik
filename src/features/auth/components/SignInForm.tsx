@@ -9,17 +9,41 @@ import InputField from "@/components/ui/InputField";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Button from "@/components/ui/Button";
+import { signInDriverWithCode } from "@/features/driver/actions";
 
-type Role = "shipper" | "carrier";
+type Role = "shipper" | "carrier" | "driver";
 
 export default function SignInForm() {
   const [role, setRole] = useState<Role>("shipper");
   const [pending, setPending] = useState(false);
+  const [driverCode, setDriverCode] = useState("");
 
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (role === "driver") {
+      if (!driverCode.trim()) {
+        toast.error("Driver code is required");
+        return;
+      }
+      setPending(true);
+      try {
+        const res = await signInDriverWithCode(driverCode);
+        if (!res.success) {
+          toast.error(res.message);
+          setPending(false);
+          return;
+        }
+        router.push(res.data?.redirectTo ?? "/driver/active-delivery");
+      } catch {
+        toast.error("Could not validate driver code. Try again.");
+      } finally {
+        setPending(false);
+      }
+      return;
+    }
+
     const form = e.currentTarget;
     const fd = new FormData(form);
     const rawEmail =
@@ -57,7 +81,7 @@ export default function SignInForm() {
     <div className="space-y-5 sm:space-y-6 w-full min-w-0">
       {/* Role toggle */}
       <div className="rounded-xl bg-brand-5 p-1.5 border border-brand-4">
-        <div className="grid grid-cols-2 gap-1">
+        <div className="grid grid-cols-3 gap-1">
           <button
             type="button"
             onClick={() => setRole("shipper")}
@@ -82,51 +106,83 @@ export default function SignInForm() {
           >
             Carrier
           </button>
+          <button
+            type="button"
+            onClick={() => setRole("driver")}
+            className={`rounded-lg py-3 px-4 text-sm font-semibold transition-all duration-200 ${
+              role === "driver"
+                ? "bg-white text-brand-1 shadow-sm ring-1 ring-brand-4"
+                : "text-muted-foreground hover:text-brand-1 hover:bg-white/50"
+            }`}
+            suppressHydrationWarning
+          >
+            Driver
+          </button>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="space-y-4">
-          <InputField
-            label="Email Address"
-            type="email"
-            name="emailAddress"
-            placeholder="you@company.com"
-          />
-
-          <div className="space-y-2">
-            <div className="flex items-center justify-between gap-2">
-              <Label htmlFor="password" className="text-sm font-medium">
-                Password
+          {role === "driver" ? (
+            <div className="space-y-2">
+              <Label htmlFor="driverCode" className="text-sm font-medium">
+                Code
               </Label>
-              <Link
-                href="/forgot-password"
-                className="text-sm text-brand-1 font-medium hover:underline"
-              >
-                Forgot password?
-              </Link>
+              <Input
+                id="driverCode"
+                type="text"
+                value={driverCode}
+                onChange={(e) => setDriverCode(e.target.value.toUpperCase())}
+                placeholder="Enter sign-in code here"
+                className="h-10 rounded-lg border-border focus-visible:ring-brand-1"
+              />
             </div>
-            <Input
-              id="password"
-              type="password"
-              name="password"
-              placeholder="Enter your password"
-              className="h-10 rounded-lg border-border focus-visible:ring-brand-1"
-            />
-          </div>
+          ) : (
+            <>
+              <InputField
+                label="Email Address"
+                type="email"
+                name="emailAddress"
+                placeholder="you@company.com"
+              />
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  <Label htmlFor="password" className="text-sm font-medium">
+                    Password
+                  </Label>
+                  <Link
+                    href="/forgot-password"
+                    className="text-sm text-brand-1 font-medium hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  name="password"
+                  placeholder="Enter your password"
+                  className="h-10 rounded-lg border-border focus-visible:ring-brand-1"
+                />
+              </div>
+            </>
+          )}
         </div>
 
-        <label className="flex items-center gap-3 cursor-pointer group">
-          <input
-            type="checkbox"
-            id="rememberMe"
-            name="rememberMe"
-            className="h-4 w-4 rounded border-border text-brand-1 focus:ring-brand-1 focus:ring-offset-0 cursor-pointer"
-          />
-          <span className="text-sm text-muted-foreground group-hover:text-foreground">
-            Remember me
-          </span>
-        </label>
+        {role !== "driver" ? (
+          <label className="flex items-center gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              id="rememberMe"
+              name="rememberMe"
+              className="h-4 w-4 rounded border-border text-brand-1 focus:ring-brand-1 focus:ring-offset-0 cursor-pointer"
+            />
+            <span className="text-sm text-muted-foreground group-hover:text-foreground">
+              Remember me
+            </span>
+          </label>
+        ) : null}
 
         <Button
           type="submit"
@@ -134,19 +190,29 @@ export default function SignInForm() {
           pendingLabel="Signing in..."
           className="w-full h-11 rounded-lg bg-brand-1 hover:bg-brand-1/90 text-white font-semibold"
         >
-          {pending ? "Signing in..." : `Sign in as ${role === "shipper" ? "Shipper" : "Carrier"}`}
+          {pending
+            ? "Signing in..."
+            : role === "driver"
+              ? "Sign in as Driver"
+              : `Sign in as ${role === "shipper" ? "Shipper" : "Carrier"}`}
         </Button>
       </form>
 
-      <p className="text-center text-sm text-muted-foreground pt-2">
-        Don&apos;t have an account?{" "}
-        <Link
-          href="/signup/shipper"
-          className="text-brand-1 font-semibold hover:underline"
-        >
-          Sign up here
-        </Link>
-      </p>
+      {role !== "driver" ? (
+        <p className="text-center text-sm text-muted-foreground pt-2">
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/signup/shipper"
+            className="text-brand-1 font-semibold hover:underline"
+          >
+            Sign up here
+          </Link>
+        </p>
+      ) : (
+        <p className="text-center text-sm text-muted-foreground pt-2">
+          Driver access is provided by your carrier as a one-time code.
+        </p>
+      )}
     </div>
   );
 }

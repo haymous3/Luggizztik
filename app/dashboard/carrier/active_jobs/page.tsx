@@ -24,6 +24,7 @@ const Page = async () => {
         },
       },
       bid: {select: {amount: true}},
+      accessCode: {select: {code: true}},
     },
   });
 
@@ -38,6 +39,8 @@ const Page = async () => {
     shipperName: j.shipment.shipper.name || j.shipment.shipper.username || j.shipment.shipper.email,
     shipperPhone: j.shipment.shipper.phoneNumber,
     createdAt: j.updatedAt.toISOString(),
+    trackingId: j.shipment.trackingId,
+    driverAccessCode: j.accessCode?.code ?? null,
   }));
 
   return <ActiveJobs jobs={parsedJobs} />;

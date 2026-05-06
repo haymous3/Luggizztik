@@ -4,6 +4,7 @@ import { Table } from "./Table";
 
 export type OverviewTableRow = {
   id: number;
+  trackingId?: string | null;
   name?: string;
   cargoType?: string;
   pickupLocation?: string;
