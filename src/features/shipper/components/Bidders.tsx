@@ -19,6 +19,7 @@ type BidderType = {
 
 type BiddersProps = {
   id: number;
+  enabled?: boolean;
   onCloseModal?: () => void;
 };
 
@@ -27,12 +28,12 @@ const fetcher = async (id: number) => {
   return data as BidderType[];
 };
 
-export default function Bidders({id, onCloseModal}: BiddersProps) {
+export default function Bidders({id, enabled = true, onCloseModal}: BiddersProps) {
   const {
     data: bidders,
     error,
     isLoading,
-  } = useSWR(id ? ["bidders", id] : null, ([, id]) => fetcher(id), {
+  } = useSWR(enabled && id ? ["bidders", id] : null, ([, id]) => fetcher(id), {
     refreshInterval: 5000,
     revalidateOnFocus: true,
   });

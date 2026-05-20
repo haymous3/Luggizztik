@@ -13,9 +13,13 @@ const Page = async () => {
   const userId = session.user.id;
 
   const shipments = await prisma.shipment.findMany({
+    where: {acceptedBidId: null},
     orderBy: {createdAt: "desc"},
     include: {
-      bids: {select: {id: true, userId: true, amount: true, status: true}},
+      bids: {
+        where: {userId},
+        select: {amount: true, status: true},
+      },
       pickupLocation: {select: {address: true}},
       deliveryLocation: {select: {address: true}},
       shipper: {select: {name: true, username: true, email: true}},
@@ -24,17 +28,16 @@ const Page = async () => {
 
   const parsedShipments = shipments
     .filter((s) => {
-      const myBid = s.bids.find((b) => b.userId === userId);
+      const myBid = s.bids[0];
       return myBid?.status !== "ACCEPTED";
     })
     .map((s) => {
-      const myBid = s.bids.find((b) => b.userId === userId);
+      const myBid = s.bids[0];
       return {
         id: s.id,
         cargoType: s.cargoType,
         pickupLocation: s.pickupLocation.address,
         deliveryLocation: s.deliveryLocation.address,
-        bids: s.bids.map((b) => String(b.id)),
         urgent: s.urgent,
         pickupDate: s.pickupDate.toISOString(),
         deliveryDate: s.deliveryDate.toISOString(),

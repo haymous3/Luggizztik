@@ -219,7 +219,7 @@ const Onboarding = ({truckTypes, initialStep}: OnboardingProps) => {
         <div className="relative w-full h-48 rounded-xl overflow-hidden mb-6">
           <Image
             src="/onboarding/img_1.png"
-            alt="Trucks"
+           alt="Trucks"
             fill
             className="object-cover"
             priority

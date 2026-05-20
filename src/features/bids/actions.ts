@@ -15,6 +15,10 @@ export const placeBid = async (formData: FormData): Promise<ActionResult> => {
       return fail("You must be logged in to place a bid");
     }
 
+    if (session.user.role !== "carrier") {
+      return fail("Only carriers can place bids");
+    }
+
     const shipmentId = Number(formData.get("shipmentId"));
     const amount = Number(formData.get("amount"));
 
@@ -34,6 +38,10 @@ export const placeBid = async (formData: FormData): Promise<ActionResult> => {
       return fail("Shipment not found");
     }
 
+    if (shipment.acceptedBidId) {
+      return fail("This shipment already has an accepted bid");
+    }
+
     await prisma.bid.create({
       data: {
         amount,
@@ -43,6 +51,7 @@ export const placeBid = async (formData: FormData): Promise<ActionResult> => {
     });
 
     revalidatePath("/dashboard/carrier/find_loads");
+    revalidatePath("/dashboard/shipper/active_bids");
 
     return ok("Bid placed successfully");
   } catch (error: unknown) {
@@ -59,6 +68,22 @@ export const placeBid = async (formData: FormData): Promise<ActionResult> => {
 };
 
 export const getBidders = async (shipmentId: number) => {
+  const session = await auth();
+  const shipperId = session?.user?.id;
+
+  if (!shipperId) {
+    return [];
+  }
+
+  const shipment = await prisma.shipment.findUnique({
+    where: {id: shipmentId},
+    select: {shipperId: true},
+  });
+
+  if (!shipment || shipment.shipperId !== shipperId) {
+    return [];
+  }
+
   const bids = await prisma.bid.findMany({
     where: {shipmentId, status: "PENDING"},
     orderBy: {createdAt: "desc"},
@@ -74,6 +99,20 @@ export const getBidders = async (shipmentId: number) => {
   });
 
   return bids;
+};
+
+export const getMyBid = async (shipmentId: number) => {
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    return null;
+  }
+
+  return prisma.bid.findFirst({
+    where: {shipmentId, userId},
+    select: {amount: true, status: true},
+  });
 };
 
 export const selectBidder = async (

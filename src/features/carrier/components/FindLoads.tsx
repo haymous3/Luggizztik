@@ -11,7 +11,6 @@ export type LoadItem = {
   cargoType: string;
   pickupLocation: string;
   deliveryLocation: string;
-  bids: string[];
   urgent: boolean;
   pickupDate: string;
   deliveryDate: string;
