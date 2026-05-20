@@ -66,13 +66,17 @@ export default function SignInForm() {
 
       if (res?.error) {
         toast.error("Invalid email or password");
-        setPending(false);
         return;
       }
 
-      router.push("/dashboard");
+      const dashboardPath =
+        role === "carrier" ? "/dashboard/carrier" : "/dashboard/shipper";
+
+      router.refresh();
+      router.push(dashboardPath);
     } catch {
       toast.error("Something went wrong. Please try again.");
+    } finally {
       setPending(false);
     }
   }

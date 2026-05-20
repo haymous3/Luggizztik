@@ -15,7 +15,9 @@
 | Phase 1 — Secure read path (P0) | **Done** | `getBidders`, `getMyBid`, scoped `find_loads` |
 | Phase 2 — Harden writes and routes (P1) | **Done** | `placeBid` guards, `middleware.ts`, SWR gate on `Bidders` |
 | Phase 3 — Review and sign-off | **In progress** | Code review done in repo; **manual QA pending** |
-| Production deploy | **Pending** | Push to `main` is not enough — trigger deploy on Vercel/host |
+| Production auth fix | **Done** | Middleware cookie name + `trustHost` + SessionProvider + sign-in flow |
+| Local build and lint (auth rollout) | **Done** | `npx next build` + `npm run lint` pass; middleware under Vercel 1 MB limit |
+| Production deploy | **Pending** | Push to `main` and redeploy on Vercel after env vars are set |
 
 ### Files changed
 
@@ -25,7 +27,10 @@
 | [`app/dashboard/carrier/find_loads/page.tsx`](../app/dashboard/carrier/find_loads/page.tsx) | Bids scoped to `userId`; only open shipments; removed `bids: string[]` from client props |
 | [`src/features/carrier/components/FindLoads.tsx`](../src/features/carrier/components/FindLoads.tsx) | Removed unused `bids` from `LoadItem` type |
 | [`src/features/shipper/components/Bidders.tsx`](../src/features/shipper/components/Bidders.tsx) | SWR only runs when `enabled` is true (default `true`; modal still lazy-mounts via `Modal.Window`) |
-| [`middleware.ts`](../middleware.ts) | Role-based `/dashboard/shipper/*` and `/dashboard/carrier/*` protection |
+| [`middleware.ts`](../middleware.ts) | Role-based dashboard protection; `getToken` with production cookie name |
+| [`src/features/auth/auth.ts`](../src/features/auth/auth.ts) | `trustHost: true`; session from JWT token (no DB per request) |
+| [`src/components/providers/SessionProvider.tsx`](../src/components/providers/SessionProvider.tsx) | Wraps app for `next-auth/react` sign-in |
+| [`src/features/auth/components/SignInForm.tsx`](../src/features/auth/components/SignInForm.tsx) | Role redirect, `router.refresh()`, `finally` resets pending |
 | *(removed)* `middeleware.ts` | Typo file was never loaded by Next.js; replaced by `middleware.ts` |
 | [`docs/agent.md`](./agent.md) | Implementer guide (unchanged scope) |
 
@@ -34,6 +39,20 @@
 - `next build` — passed  
 - `eslint` — passed  
 - No Prisma migration required (application-level fix only)
+
+#### Auth rollout sign-off (local CI)
+
+Run these before merging or tagging a release (PowerShell uses `;` instead of `&&`):
+
+```powershell
+cd path\to\Luggizztik\Luggizztik
+npx next build
+npm run lint
+```
+
+**Last verified (repo):** `npx next build` and `npm run lint` both exit **0**. Build output reports **Middleware ~45.2 kB** (well under Vercel Hobby’s **1 MB** Edge limit). No Prisma/bcrypt Edge warnings when middleware does not import `auth.ts`.
+
+**After deploy:** run the [Production auth test matrix](#production-auth-test-matrix) (A1–A8) and the [manual test matrix](#manual-test-matrix) (1–8) on the live URL in an incognito window.
 
 ---
 
@@ -222,7 +241,64 @@ Code on `main` does **not** update production automatically unless your host aut
 
 Vercel Hobby plans cap Edge Functions at **1 MB**. Do **not** import [`auth.ts`](../src/features/auth/auth.ts) or Prisma in [`middleware.ts`](../middleware.ts) — that bundles bcrypt + Prisma and exceeds the limit.
 
-[`middleware.ts`](../middleware.ts) uses **`getToken`** from `next-auth/jwt` only (reads `token.role` from the session cookie). Role redirects behave the same; ensure `AUTH_SECRET` is set in Vercel environment variables.
+[`middleware.ts`](../middleware.ts) uses **`getToken`** from `next-auth/jwt` only. In production you **must** pass the Auth.js v5 cookie name and salt:
+
+| Environment | Cookie name |
+|-------------|-------------|
+| Local (HTTP) | `authjs.session-token` |
+| Production (HTTPS) | `__Secure-authjs.session-token` |
+
+JWT-only middleware is correct for size limits; production sign-in failed when `getToken` used the dev cookie name only. Do not revert to `auth()` in middleware.
+
+Ensure **`AUTH_SECRET`** is identical in Vercel Production and used by both the auth API and middleware.
+
+---
+
+## Production authentication
+
+Sign-in can work locally but fail on Vercel when middleware cannot read the session cookie, env vars are wrong, or the client never finishes the login UI flow.
+
+### Root causes addressed in code
+
+1. **Cookie name mismatch** — production uses `__Secure-authjs.session-token`; middleware now sets `cookieName` and `salt` accordingly.
+2. **`trustHost`** — added to [`auth.ts`](../src/features/auth/auth.ts) for Vercel host/callback handling.
+3. **Session callback DB round-trip** — session now hydrates from JWT `token` only (password still checked in `authorize()` at login).
+4. **Missing `SessionProvider`** — added in [`app/layout.tsx`](../app/layout.tsx).
+5. **Sign-in UI** — [`SignInForm.tsx`](../src/features/auth/components/SignInForm.tsx) redirects by role, calls `router.refresh()`, and always clears pending in `finally`.
+
+### Vercel environment checklist
+
+Before sign-off on production:
+
+- [ ] **`AUTH_SECRET`** — set for Production (generate: `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`).
+- [ ] **`DATABASE_URL`** — pooled URL (e.g. copy from `*_PRISMA_DATABASE_URL` integration var).
+- [ ] **`DIRECT_URL`** — direct URL (e.g. copy from `*_POSTGRES_URL`).
+- [ ] **`AUTH_URL`** (recommended) — `https://your-production-domain.vercel.app`.
+- [ ] **Redeploy** after any env change.
+- [ ] Test in **incognito** (old cookies invalid after `AUTH_SECRET` rotation).
+
+### Production auth test matrix
+
+Run on the **live URL** in incognito after redeploy:
+
+| # | Test | Expected | Pass |
+|---|------|----------|------|
+| A1 | Sign in as shipper | Lands on `/dashboard/shipper` | ☐ |
+| A2 | Sign out; sign in as carrier | Lands on `/dashboard/carrier` | ☐ |
+| A3 | After login → DevTools → Cookies | `__Secure-authjs.session-token` on production domain | ☐ |
+| A4 | Shipper visits `/dashboard/carrier` | Redirect to `/dashboard/shipper` | ☐ |
+| A5 | Carrier visits `/dashboard/shipper/active_bids` | Redirect to `/dashboard/carrier` | ☐ |
+| A6 | Logged out → `/dashboard/shipper` | Redirect to `/signin` | ☐ |
+| A7 | Wrong password | Error toast; button leaves “Signing in…” | ☐ |
+| A8 | Bid matrix tests 1–8 | No regression | ☐ |
+
+**Troubleshooting**
+
+| Symptom | Likely cause |
+|---------|----------------|
+| A1 fails, A3 cookie **present** | Middleware/env cookie fix not deployed |
+| A1 fails, A3 cookie **missing** | `AUTH_SECRET`, `DATABASE_URL`, or auth API error — check Vercel function logs for `/api/auth/callback/credentials` |
+| Stuck on “Signing in…” | Client pending state (fixed in code) or slow/hanging API |
 
 ---
 

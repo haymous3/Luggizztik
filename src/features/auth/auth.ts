@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
 const { auth, signIn, handlers } = NextAuth({
+  trustHost: true,
   providers: [
     Credentials({
       credentials: {
@@ -57,6 +58,7 @@ const { auth, signIn, handlers } = NextAuth({
         token.id = user.id as number;
         token.username = user.username;
         token.email = user.email;
+        token.name = user.name ?? user.username ?? "";
         token.role = user.role as string;
       }
 
@@ -64,27 +66,16 @@ const { auth, signIn, handlers } = NextAuth({
     },
 
     async session({session, token}) {
-      const dbUser = await prisma.user.findUnique({
-        where: {id: Number(token.id)},
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          username: true,
-          role: true,
-        },
-      });
-
-      if (!dbUser) {
+      if (!token.id) {
         return {...session, user: undefined};
       }
 
       if (session.user) {
-        session.user.id = dbUser.id;
-        session.user.email = dbUser.email;
-        session.user.name = dbUser.name ?? dbUser.username ?? "";
-        session.user.username = dbUser.username;
-        session.user.role = dbUser.role;
+        session.user.id = Number(token.id);
+        session.user.email = (token.email as string) ?? "";
+        session.user.name = (token.name as string) ?? "";
+        session.user.username = (token.username as string) ?? "";
+        session.user.role = (token.role as string) ?? "";
       }
 
       return session;

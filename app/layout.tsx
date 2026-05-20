@@ -2,6 +2,7 @@ import type {Metadata} from "next";
 import {Poppins, Montserrat} from "next/font/google";
 import "@/styles/globals.css";
 import {Toaster} from "@/components/ui/sonner";
+import SessionProvider from "@/components/providers/SessionProvider";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -44,7 +45,9 @@ export default function RootLayout({
       <body
         className={`${poppins.className} ${montserrat.className} antialiased min-h-screen flex flex-col relative`}
       >
-        <main className="w-full">{children}</main>
+        <SessionProvider>
+          <main className="w-full">{children}</main>
+        </SessionProvider>
         <Toaster richColors position="top-right" />
       </body>
     </html>
